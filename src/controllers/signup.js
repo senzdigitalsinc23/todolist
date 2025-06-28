@@ -1,7 +1,7 @@
 
+export const  userRegistration = (username, password, confirmPass) => {
+    let message = '';
 
-let userDetails = (username, password, confirmPass) => {
-    
     const getUsername = () => {
         return username;
     }
@@ -14,62 +14,68 @@ let userDetails = (username, password, confirmPass) => {
         return confirmPass;
     }
 
-    return { getUsername, getPassword, getConfirm };
-}
-
-let validateUserDetails = () => {
-    
     const checkUsername = () => { 
-        if(user.getUsername() != "") {
+        if(getUsername() != "") {
             return true;
         }
         return false;
     }
 
     const checkPassword = () => { 
-        if(user.getPassword() != "") {
+        if(getPassword() != "") {
             return true;
         }
         return false;
     }
 
     const passwordMatches = () => { 
-        if(user.getPassword() == user.getConfirm()) {
+        if(getPassword() == getConfirm()) {
             return true;
         }
         return false;
     }
 
-    return {
-        checkUsername,
-        checkPassword,
-        passwordMatches
+    const userExists = () => {
+        if (localStorage.getItem(getUsername()) != null) {
+            return true;
+        }
+
+        return false;
     }
-}
 
-let registerUser = () => {
-    let message = '';
+    let registerUser = () => {
+        
+        if (checkUsername()) {
+            if (checkPassword()) {
+                if (passwordMatches()) {
+                    if (! userExists()) {
+                        let userInfo = {
+                        'username': getUsername(),
+                        'password': getPassword()
+                        }
 
-    if (validate.checkUsername()) {
-        if (validate.checkPassword()) {
-            if (validate.passwordMatches()) {
-                let userInfo = {
-                    'username': user.getUsername(),
-                    'password': user.getPassword()
+                        localStorage.setItem(getUsername(), JSON.stringify(userInfo));
+
+                        message = "User " + getUsername().toUpperCase() + " registered successfully";
+                    }else {
+                        message = "Username already taken";
+                    }
+                }else {
+                    message =  "Passwords do not match";
                 }
-
-                localStorage.setItem(user.getUsername(), JSON.stringify(userInfo));
-
-                message = "User " + user.getUsername().toUpperCase() + " registered successfully";
             }else {
-                message =  "Passwords do not match";
+                message =  "Password is required";
             }
         }else {
-            message =  "Password is required";
+            message =  "Username is required";
         }
-    }else {
-        message =  "Username is required";
+
+        return message;
     }
 
-    return message;
+
+    return {
+        registerUser, getUsername
+    }
 }
+
