@@ -58,7 +58,7 @@ let registerUser = () => {
                     'password': user.getPassword()
                 }
 
-                localStorage.setItem('user', JSON.stringify(userInfo));
+                localStorage.setItem(user.getUsername(), JSON.stringify(userInfo));
 
                 message = "User " + user.getUsername().toUpperCase() + " registered successfully";
             }else {
